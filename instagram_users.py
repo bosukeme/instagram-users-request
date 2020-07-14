@@ -13,8 +13,8 @@ headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleW
 
 
 
-MONGO_URL="mongodb://Bloverse:uaQTRSp6d9czpcCg@64.227.12.212:27017/social_profiling?authSource=admin&readPreference=primary&appname=MongoDB%20Compass&ssl=false"
-mongo_url2="mongodb+srv://bloverse:b1XNYDtSQNEv5cAn@bloverse-production.fbt75.mongodb.net/inspirations?retryWrites=true&w=majority"
+MONGO_URL="pass in cnt string"
+mongo_url2="pass in cnt string"
 
 client= MongoClient(MONGO_URL, connect=False)
 db = client.instagram_user
