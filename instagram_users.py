@@ -13,8 +13,8 @@ headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleW
 
 
 
-MONGO_URL="pass in cnt string"
-mongo_url2="pass in cnt string"
+MONGO_URL="mongodb://Bloverse:uaQTRSp6d9czpcCg@64.227.12.212:27017/social_profiling?authSource=admin&readPreference=primary&appname=MongoDB%20Compass&ssl=false"
+mongo_url2="mongodb+srv://bloverse:b1XNYDtSQNEv5cAn@bloverse-production.fbt75.mongodb.net/inspirations?retryWrites=true&w=majority"
 
 client= MongoClient(MONGO_URL, connect=False)
 db = client.instagram_user
@@ -35,7 +35,7 @@ def load_entities():
     entities=list(article_collection.find({}, {"_id":0, "entities":1}))
     entities=list((val for dic in entities for val in dic.values()))
     
-    entities= [a for b in entities for a in b][:8] ##return a single list
+    entities= [a for b in entities for a in b][:13250] ##return a single list
     print("len chisom: ", len(entities))
 
     
@@ -95,8 +95,10 @@ def get_all(new_ent):
             name_list=[item[1] if len(item)>1 else "nill" for item in all_list][:5]
             
             num_of_likes= get_number_of_likes(handle_list)
+
+            save_entity= [ent for a in range(len(handle_list))]
             
-            df= save_as_df(handle_list, name_list, num_of_likes)
+            df= save_as_df(save_entity, handle_list, name_list, num_of_likes)
             print(df)
             save_to_mongodb(df)
 
@@ -125,7 +127,7 @@ def get_number_of_likes(handle_list):
                 with requests.Session() as c:
                     url= 'https://searchusers.com/'+ 'user/' + j 
                     
-                    search=c.get(url, headers=headers, )
+                    search=c.get(url, headers=headers)
                     soup = BeautifulSoup(search.content, 'html.parser')
                     
                     nposts2 = soup.findAll('div',  {'class': 'tallyb'}) ##get where the number of likes is called 
@@ -151,7 +153,7 @@ def get_number_of_likes(handle_list):
         
 
         
-def save_as_df(handle_list, name_list, num_of_likes):  
+def save_as_df(save_entity, handle_list, name_list, num_of_likes):  
     
    # handle_every=[b for a in handle_every for b in  a[:2]]
     
@@ -160,6 +162,7 @@ def save_as_df(handle_list, name_list, num_of_likes):
     
     ##save all to a dataframe       
     df=pd.DataFrame()
+    df['entities']=save_entity
     df['handle']=handle_list
     df['full name']=name_list
     df['likes_per_post']=num_of_likes
@@ -186,9 +189,9 @@ def save_to_mongodb(df):
 
 
     #loop throup the handles, and add only new enteries
-    for handle in df['handle']:
+    for entity, handle, name, likes in df[['entities','handle', 'full names', 'likes_per_post']].itertuples(index=False):
         if handle  not in instagram_users:
-            instagram_user_collection.insert_many(df.to_dict('records')) ####save the df to the collection
+            instagram_user_collection.insert_one({"entities":entity, "handle":handle, "full name":name, "likes_per_post":likes}) ####save the df to the collection
     
     
   
