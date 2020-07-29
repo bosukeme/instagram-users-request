@@ -185,7 +185,7 @@ def save_to_mongodb(df):
     
      ##search for the entities in the processed colection and store it as a list
     instagram_users=list(instagram_user_collection.find({},{ "_id": 0, "handle": 1})) 
-    instagram_users=list((val for dic in instagram_users for val in dic.values()))
+    instagram_users=list((val for dic in instagram_users for val in dic.values())) 
 
 
     #loop throup the handles, and add only new enteries
