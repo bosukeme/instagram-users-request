@@ -35,7 +35,7 @@ def load_entities():
     entities=list(article_collection.find({}, {"_id":0, "entities":1}))
     entities=list((val for dic in entities for val in dic.values()))
     
-    entities= [a for b in entities for a in b][:13250] ##return a single list
+    entities= [a for b in entities for a in b] #[:13250] ##return a single list
     print("len chisom: ", len(entities))
 
     
@@ -76,7 +76,7 @@ def get_all(new_ent):
     name_every=[]
     
     
-    for ent in new_ent[:10]:
+    for ent in new_ent:
         try:
             url='https://searchusers.com/search/' + ent #'ukeme'
             print(url)
@@ -189,7 +189,7 @@ def save_to_mongodb(df):
 
 
     #loop throup the handles, and add only new enteries
-    for entity, handle, name, likes in df[['entities','handle', 'full names', 'likes_per_post']].itertuples(index=False):
+    for entity, handle, name, likes in df[['entities','handle', 'full name', 'likes_per_post']].itertuples(index=False):
         if handle  not in instagram_users:
             instagram_user_collection.insert_one({"entities":entity, "handle":handle, "full name":name, "likes_per_post":likes}) ####save the df to the collection
     
